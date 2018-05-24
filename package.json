@@ -1,0 +1,24 @@
+{
+  "name": "journal-assistant",
+  "version": "1.0.0",
+  "description": "CLI to assist in keeping a daily journal",
+  "main": "jass.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "journal"
+  ],
+  "author": "jquag",
+  "license": "ISC",
+  "bin": {
+    "ja": "./ja.js"
+  },
+  "dependencies": {
+    "clear": "^0.1.0",
+    "colors": "^1.2.1",
+    "commander": "^2.15.1",
+    "moment": "^2.22.1"
+  }
+}

@@ -23,6 +23,9 @@ exports.parseDay = (day) => {
             date = moment(day);
     }
 
+    if (!date.isValid()) {
+        throw new Error(`Invalid Date: ${day}`);
+    }
     return toDateInfo(date);
 };
 

@@ -35,7 +35,7 @@ function toDateInfo(date) {
         dateStr: date.format('YYYYMMDD'),
         year: date.year(),
         month: date.format('MMM'),
-        path: `${date.year()}/${date.format('MMM')}/${date.format('YYYYMMDD')}-entry.txt`,
+        path: `${date.year()}/${date.format('MMM')}/${date.format('YYYYMMDD')}-entry.md`,
         next,
         prev
     }

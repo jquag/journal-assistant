@@ -2,7 +2,7 @@ const fs = require('fs');
 const child_process = require('child_process');
 const util = require('../util');
 
-const editor = process.env.EDITOR || 'vi';
+const editor = process.env.EDITOR || 'vim';
 
 exports.action = (dayArg, options) => {
     const dateInfo = util.parseDay(dayArg);
@@ -20,7 +20,7 @@ exports.action = (dayArg, options) => {
     if (!fs.existsSync(dateInfo.path)) {
         console.log('  creating entry: ' + dateInfo.path.value);
         fs.openSync(dateInfo.path, 'a');
-        fs.appendFileSync(dateInfo.path, dateInfo.date.format('YYYY-MM-DD'));
+        fs.appendFileSync(dateInfo.path, `# ${dateInfo.date.format('YYYY-MM-DD')}`);
     }
 
     const child = child_process.spawn(editor, [dateInfo.path], {

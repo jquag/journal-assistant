@@ -38,7 +38,7 @@ program.command('read [day]')
 
 program.command('find [term]')
   .description('Find lines in entries for the given search term')
-  .option('-b --buffer [num]', 'include [num] characters before and after the term', 20)
+  .option('-b --buffer [num]', 'include [num] characters before and after the term', 25)
   .on('--help', find.help)
   .action(find.action);
 

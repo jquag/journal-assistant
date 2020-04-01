@@ -1,5 +1,6 @@
 const fs = require("fs");
 const util = require('../util');
+const moment = require('moment');
 
 exports.action = (term, options) => {
     if (!term) {
@@ -10,7 +11,8 @@ exports.action = (term, options) => {
         const contents = fs.readFileSync(entry).toString();
         const match = contents.match(new RegExp(`(${term})`, 'ig'));
         if (match) {
-            console.log(`\n  ${entry}`.header);
+            const date = moment(entry.match(/(\d{8})-entry.md/)[1]).format("YYYY-MM-DD");
+            console.log(`\n  ${date}`.header);
             let lastIndex = -1;
             for (let mi=0; mi<match.length; mi++) {
                 const matchedTerm = match[mi];

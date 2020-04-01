@@ -4,6 +4,8 @@ const program = require('commander');
 const init = require('./commands/init');
 const open = require('./commands/open');
 const read = require('./commands/read');
+const find = require('./commands/find');
+const tags = require('./commands/tags');
 const colors = require('colors');
 
 colors.setTheme({
@@ -34,11 +36,20 @@ program.command('read [day]')
     .on('--help', read.help)
     .action(read.action);
 
+program.command('find [term]')
+  .description('Find lines in entries for the given search term')
+  .option('-b --buffer [num]', 'include [num] characters before and after the term', 20)
+  .on('--help', find.help)
+  .action(find.action);
+
+program.command('tags')
+  .description('Shows a list of previously used tags. Tags start with a # and are followed by one or more numbers or letters.')
+  .on('--help', tags.help)
+  .action(tags.action);
+
 // TODO JQ: add 'random' to open
 
 // TODO JQ: read --interactive -i (n N 2n 2N q) colors, --count -c [number of days] [day=same as before plus 'random']
-
-// TODO JQ: search
 
 // TODO JQ: list days
 

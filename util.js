@@ -1,4 +1,5 @@
 const moment = require('moment');
+const fs = require('fs');
 
 exports.parseDay = (day) => {
     let date;
@@ -28,6 +29,24 @@ exports.parseDay = (day) => {
     }
     return toDateInfo(date);
 };
+
+exports.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+exports.entries = entryGen;
+
+function* entryGen() {
+    const years = fs.readdirSync('.').filter(f => f.match(/\d{4}/));
+    for (const y of years) {
+        for (const m of exports.months) {
+            if (fs.existsSync(`./${y}/${m}`)) {
+                const entries = fs.readdirSync(`./${y}/${m}`).filter(f => f.match(/\d{8}-entry.md/));
+                for (const entry of entries) {
+                    yield `./${y}/${m}/${entry}`;
+                }
+            }
+        }
+    }
+}
 
 function toDateInfo(date) {
     return {

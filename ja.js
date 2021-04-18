@@ -30,7 +30,6 @@ program.command('open [day]')
 
 program.command('read [day]')
     .description('Read journal entries')
-    // .option('--interactive -i', 'run in interactive mode')
     .option('-p --plus [num]', 'read the specified day and the following [num] days')
     .option('-m --minus [num]', 'read the [num] days prior to the specified day as well as the specified day')
     .on('--help', read.help)

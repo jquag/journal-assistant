@@ -7,11 +7,11 @@ exports.action = (term, options) => {
         console.log('  A search term is required'.error);
         return exports.help();
     }
-    for (const entry of util.entries()) {
-        const contents = fs.readFileSync(entry).toString();
+    for (const entry of util.entries({reverse: false})) {
+        const contents = fs.readFileSync(entry.path).toString();
         const match = contents.match(new RegExp(`(${term})`, 'ig'));
         if (match) {
-            const date = moment(entry.match(/(\d{8})-entry.md/)[1]).format("YYYY-MM-DD");
+            const date = entry.date.format("YYYY-MM-DD");
             console.log(`\n  ${date}`.header);
             let lastIndex = -1;
             for (let mi=0; mi<match.length; mi++) {

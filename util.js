@@ -20,6 +20,9 @@ exports.parseDay = (day) => {
         case 'saturday':
             date = rollBackToDay(day);
             break;
+        case 'last':
+            date = moment(lastEntryDate().date);
+            break;
         default:
             date = moment(day);
     }
@@ -34,14 +37,43 @@ exports.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
 
 exports.entries = entryGen;
 
-function* entryGen() {
+function* entryGen(opts={reverse: true, fromDate: null}) {
     const years = fs.readdirSync('.').filter(f => f.match(/\d{4}/));
+    years.sort();
+    if (opts.reverse) {
+        years.reverse();
+    }
+    const months = [...exports.months];
+    if (opts.reverse) {
+        months.reverse();
+    }
     for (const y of years) {
-        for (const m of exports.months) {
-            if (fs.existsSync(`./${y}/${m}`)) {
-                const entries = fs.readdirSync(`./${y}/${m}`).filter(f => f.match(/\d{8}-entry.md/));
-                for (const entry of entries) {
-                    yield `./${y}/${m}/${entry}`;
+        const validYear = opts.fromDate ? (opts.reverse ? opts.fromDate.year() >= y : opts.fromDate.year() <= y) : true
+        if (validYear) {
+            for (const m of months) {
+                const currMonth = moment(`${y}-${m}`, 'YYYY-MMM');
+                if (!opts.reverse) {
+                    currMonth.endOf('month');
+                }
+                const validMonth = opts.fromDate ? (opts.reverse ? opts.fromDate.isSameOrAfter(currMonth) : opts.fromDate.isSameOrBefore(currMonth)) : true;
+                if (validMonth) {
+                    if (fs.existsSync(`./${y}/${m}`)) {
+                        const entries = fs.readdirSync(`./${y}/${m}`).filter(f => f.match(/\d{8}-entry.md/));
+                        entries.sort();
+                        if (opts.reverse) {
+                            entries.reverse();
+                        }
+                        for (const entry of entries) {
+                            const curr = moment(entry.slice(-17, -9));
+                            if (!opts.reverse) {
+                                curr.endOf('day');
+                            }
+                            const valid = opts.fromDate ? (opts.reverse ? opts.fromDate.isSameOrAfter(curr) : opts.fromDate.isSameOrBefore(curr)) : true;
+                            if (valid) {
+                                yield toDateInfo(moment(curr));
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -74,4 +106,10 @@ function rollBackToDay(dayOfWeek) {
         date = date.subtract(1, 'days');
     }
     return date;
+}
+
+function lastEntryDate() {
+    const lastEntry = entryGen().next().value;
+    console.log('-->', lastEntry.dateStr);
+    return lastEntry;
 }

@@ -1,5 +1,6 @@
 const fs = require("fs");
 const util = require('../util');
+const moment = require('moment');
 
 exports.action = (dayArg, options) => {
     const days = [];
@@ -8,16 +9,24 @@ exports.action = (dayArg, options) => {
     days.push(dateInfo);
 
     if (options.plus && options.plus > 0) {
-        for (let i=0; i<options.plus; i++) {
-            dateInfo = dateInfo.next();
-            days.push(dateInfo);
+        let count = 0;
+        let entries = util.entries({reverse: false, fromDate: moment(dateInfo.date).add(1, 'days')});
+        let result = entries.next();
+        while (count < options.plus && result.value) {
+            days.push(result.value);
+            result = entries.next()
+            count++;
         }
     }
 
     if (options.minus && options.minus > 0) {
-        for (let i=0; i<options.minus; i++) {
-            dateInfo = dateInfo.prev();
-            days.unshift(dateInfo);
+        let count = 0;
+        let entries = util.entries({reverse: true, fromDate: moment(dateInfo.date).subtract(1, 'days')});
+        let result = entries.next();
+        while (count < options.minus && result.value) {
+            days.unshift(result.value);
+            result = entries.next()
+            count++;
         }
     }
 
@@ -32,7 +41,6 @@ exports.action = (dayArg, options) => {
         }
         console.log();
     }
-    console.log('\n');
 };
 
 exports.help = () => {
@@ -42,7 +50,7 @@ exports.help = () => {
     console.log('    #read today\'s entry'.comment);
     console.log('    ja read');
     console.log();
-    console.log('    #read yesterday\'s entry in interactive mode'.comment);
+    console.log('    #read yesterday\'s entry'.comment);
     console.log('    ja read -i yesterday');
     console.log();
     console.log('    #read monday and the following three day\'s entries'.comment);
@@ -51,12 +59,5 @@ exports.help = () => {
     console.log('    #read an entry from a certain date and 2 days before it'.comment);
     console.log('    ja read --minus 2 2018/4/29');
     console.log();
-    // console.log('  Interactive Mode:'.header);
-    // console.log();
-    // console.log('    After each day is printed the following key strokes can be used to print the next or previous day.');
-    // console.log();
-    // console.log(`    ${'j, <up>'.value} \t- print the previous day`);
-    // console.log(`    ${'k, <down>'.value} \t- print the next day`);
-    // console.log(`    ${'q, <esc>'.value} \t- quit interactive mode`);
     console.log();
 };
